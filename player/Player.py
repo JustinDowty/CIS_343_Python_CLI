@@ -8,6 +8,9 @@ class Player:
     def __init__(self):
         self.currentSong = "Nothing playing."
         self.paused = True
+        # Added this to be checked in stop function to avoid a "no member stream" error 
+        # for running without a song playing at first
+        self.stream = False
         self.position = 0
 
     def getCurrentSong(self):
@@ -25,7 +28,6 @@ class Player:
         self.paused = False
         self.currentSong = track
         self.wf = wave.open(track, 'rb')
-
         # instantiate PyAudio (1)
         self.p = pyaudio.PyAudio()
 
@@ -40,11 +42,13 @@ class Player:
         self.stream.start_stream()
 
     def stop(self):
-        self.stream.stop_stream()
-        self.stream.close()
-        self.wf.close()
-
-        self.p.terminate() 
+        # Stop gets called before stream with the current implementation, 
+        # Added this check to avoid error
+        if(self.stream):
+            self.stream.stop_stream()
+            self.stream.close()
+            self.wf.close()
+            self.p.terminate()
 
     def callback(self, in_data, frame_count, time_info, status):
         data = self.wf.readframes(frame_count)

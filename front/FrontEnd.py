@@ -26,6 +26,7 @@ class FrontEnd:
         self.player = player
         self.library = library
         self.playlist = []
+        self.files = []
         curses.wrapper(self.menu)
         
 

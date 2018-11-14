@@ -48,17 +48,20 @@ class FrontEnd:
                 self.stdscr.touchwin()
                 self.stdscr.refresh()
             elif c == ord('d'):
-                self.files = self.library.changeDirectory()
+                self.changeDirectory()
                 self.resetScreen()
                 self.updateSong()
                 self.updateDirectory()
                 self.updatePlaylist()
             elif c == ord('s'):
-                self.playlist = self.library.addFileToPlaylist()
+                fileInDir = self.addFileToPlaylist()
                 self.resetScreen()
                 self.updateSong()
                 self.updateDirectory()
                 self.updatePlaylist()
+                if not fileInDir:
+                    # Printing error saying file not in directory
+                    self.stdscr.addstr(17,10,"ERROR: NO FILE AT THAT PATH")
             elif c == ord('x'):
                 self.playlist = []
                 self.resetScreen()
@@ -142,4 +145,36 @@ class FrontEnd:
             self.stdscr.addstr(ctr, 100, p[-25:])
             ctr += 1
         self.stdscr.refresh()
+
+    def changeDirectory(self):
+        """Spawns a new window for the user to enter a new directory
+           When a new directory is entered th screen is updated to contain the new directory's contents"""
+        changeWindow = curses.newwin(5, 30, 20, 60)
+        changeWindow.border()
+        changeWindow.addstr(0,0, "What is the directory path?", curses.A_REVERSE)
+        curses.echo()
+        # Reformating path to contain wav files specifically 
+        path = changeWindow.getstr(1,1, 30)
+        path = path.decode(encoding="utf-8")
+        path = path + "/*.wav"
+        curses.noecho()
+        self.files = self.library.getDirectoryFiles(path)
+
+    def addFileToPlaylist(self):
+        """Spawns a new window for the user to enter a valid file from the directory
+           to add to their current playlist, playlist gets updated after file is chosen"""
+        changeWindow = curses.newwin(5, 30, 20, 100)
+        changeWindow.border()
+        changeWindow.addstr(0,0, "Which song?", curses.A_REVERSE)
+        curses.echo()
+        newSong = changeWindow.getstr(1,1, 30)
+        newSongDecode = newSong.decode(encoding="utf-8")
+        if newSongDecode in self.files:
+            curses.noecho()
+            self.playlist.append(newSong)
+            return True
+        else:
+            curses.noecho()
+            return False
+
 

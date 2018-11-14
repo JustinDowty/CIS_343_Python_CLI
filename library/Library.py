@@ -11,7 +11,7 @@ class Library:
         self.files = []   
 
     def getDirectoryFiles(self, path):
-    """Get directory returns a list of files from a give path"""
+        """Get directory returns a list of files from a give path"""
         self.files = glob.glob(path)
         return self.files
 		

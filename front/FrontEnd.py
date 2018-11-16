@@ -2,7 +2,7 @@ import glob
 import curses
 import curses.textpad
 import os
-from .CLI_Audio_Exceptions import *
+from ex.CLI_Audio_Exceptions import *
 
 import sys
 
@@ -89,13 +89,9 @@ class FrontEnd:
         self.stdscr.refresh()
         self.player.stop()
         try:
-            #Checks if file exists, if not throw exception
-            exists = os.path.isfile(path.decode(encoding="utf-8"))
-            if not exists:
-                raise CLI_File_Not_Found_Exception
+            self.player.play(path.decode(encoding="utf-8"))
             #If song exists error line is reset, then song is played
             self.stdscr.addstr(20,10,"                              ")
-            self.player.play(path.decode(encoding="utf-8"))
         except CLI_File_Not_Found_Exception:
             self.stdscr.addstr(17,10,"ERROR: NO FILE AT THAT PATH")
         

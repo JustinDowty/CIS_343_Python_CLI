@@ -3,6 +3,8 @@
 import pyaudio
 import wave
 import time
+import os
+from ex.CLI_Audio_Exceptions import *
 
 class Player:
     def __init__(self):
@@ -27,6 +29,10 @@ class Player:
     def play(self, track):
         self.paused = False
         self.currentSong = track
+        #Checks if file exists, if not throw exception
+        exists = os.path.isfile(track)
+        if not exists:
+            raise CLI_File_Not_Found_Exception
         self.wf = wave.open(track, 'rb')
         # instantiate PyAudio (1)
         self.p = pyaudio.PyAudio()

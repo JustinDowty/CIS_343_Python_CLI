@@ -32,6 +32,7 @@ class Player:
         #Checks if file exists, if not throw exception
         exists = os.path.isfile(track)
         if not exists:
+            self.currentSong = "Nothing playing."
             raise CLI_File_Not_Found_Exception
         self.wf = wave.open(track, 'rb')
         # instantiate PyAudio (1)
